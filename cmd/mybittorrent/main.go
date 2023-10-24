@@ -33,8 +33,22 @@ func decodeBencode(bencodedString string) (interface{}, error) {
 		}
 
 		return bencodedString[firstColonIndex+1 : firstColonIndex+1+length], nil
+	} else if unicode.IsLetter(rune(bencodedString[0])) {
+		switch bencodedString[0] {
+		case 'i':
+			{
+				result, err := strconv.Atoi(bencodedString[1 : len(bencodedString)-1])
+				if err != nil {
+					return "", fmt.Errorf("Error parsing number")
+				}
+
+				return result, nil
+			}
+		default:
+			fmt.Errorf("Only supporting numbers")
+		}
 	} else {
-		return "", fmt.Errorf("Only strings are supported at the moment")
+		return "", fmt.Errorf("Only numbers and strings are supported at the moment")
 	}
 }
 
