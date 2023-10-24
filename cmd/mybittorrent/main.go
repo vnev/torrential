@@ -44,6 +44,23 @@ func decodeBencode(bencodedString string) (interface{}, error) {
 
 				return result, nil
 			}
+		case 'l':
+			{
+				finalResult := []interface{}{}
+				start := 1
+				end := len(bencodedString) - 1
+				for start != end {
+					result, err := decodeBencode(bencodedString[start:end])
+					if err != nil {
+						return "", fmt.Errorf("Encountered issue while trying to decode list")
+					}
+
+					start += len(fmt.Sprintf("%v", result)) + 2 // chomp the string length and : for string decode, i and ending e for number decode
+					finalResult = append(finalResult, result)
+				}
+
+				return finalResult, nil
+			}
 		default:
 			return "", fmt.Errorf("Only supporting numbers")
 		}
