@@ -61,6 +61,33 @@ func decodeBencode(bencodedString string) (interface{}, error) {
 
 				return finalResult, nil
 			}
+		case 'd':
+			{
+				finalResult := make(map[string]interface{})
+				start := 1
+				end := len(bencodedString) - 1
+
+				for start != end {
+					// decode the key
+					result, err := decodeBencode(bencodedString[start:end])
+					if err != nil {
+						return "", fmt.Errorf("Encountered issue while trying to decode key in dict")
+					}
+					tempStr := fmt.Sprintf("%v", result)
+					start += len(tempStr) + 2
+
+					// decode the value
+					result, err = decodeBencode(bencodedString[start:end])
+					if err != nil {
+						return "", fmt.Errorf("Encountered issue while trying to decode value in dict")
+					}
+
+					start += len(fmt.Sprintf("%v", result)) + 2
+					finalResult[tempStr] = result
+				}
+
+				return finalResult, nil
+			}
 		default:
 			return "", fmt.Errorf("Only supporting numbers")
 		}
