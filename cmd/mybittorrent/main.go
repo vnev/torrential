@@ -45,11 +45,11 @@ func decodeBencode(bencodedString string) (interface{}, error) {
 				return result, nil
 			}
 		default:
-			fmt.Errorf("Only supporting numbers")
+			return "", fmt.Errorf("Only supporting numbers")
 		}
-	} else {
-		return "", fmt.Errorf("Only numbers and strings are supported at the moment")
 	}
+
+	return "", fmt.Errorf("Only numbers and strings are supported at the moment")
 }
 
 func main() {
